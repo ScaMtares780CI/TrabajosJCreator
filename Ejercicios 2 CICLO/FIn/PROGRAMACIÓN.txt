@@ -1,0 +1,243 @@
+//////////////////Método Ordenar Alfabeticamente////////////////
+	static void OrdenarAlfabeticamente(int n ,String nombCurso[] ,String idCurso[] ,int cred[] ,String idPrereq[] ,int ciclo[])throws IOException{
+		int i,j,credAux,cicloAux;
+		String nomAux,idCursoAux,idPreReqAux;
+		for(i=0; i < n; i++){
+			for(j=i+1; j < n; j++){
+				if( nombCurso[i].compareTo(nombCurso[j]) > 0 ){
+					nomAux = nombCurso[i];
+					nombCurso[i] = nombCurso[j];
+					nombCurso[j] = nomAux;
+					credAux = cred[i];
+					cred[i] = cred[j];
+					cred[j] = credAux;
+					cicloAux = ciclo[i];
+					ciclo[i] = ciclo[j];
+					ciclo[j] = cicloAux;
+					idCursoAux = idCurso[i];
+					idCurso[i] = idCurso[j];
+					idCurso[j] = idCursoAux;
+					idPreReqAux = idPrereq[i];
+					idPrereq[i] = idPrereq[j];
+					idPrereq[j] = idPreReqAux;
+				}
+			}
+		}
+		System.out.println("Datos ordenados de forma ascendente");
+		System.out.println();
+		return;
+	}
+	
+	//////////////////Método Ordenar Descendente por Ciclo////////////////
+	static void OrdenarCicloDescendente(int n ,String nombCurso[] ,String idCurso[] ,int cred[] ,String idPrereq[] ,int ciclo[])throws IOException{
+		int i,j,credaux,cicloaux;
+		String nomaux,idcursaux,idprereqaux;
+		for(i=0; i < n; i++){
+			for(j=i+1; j < n; j++){
+				if( ciclo[j] > ciclo[i] ){
+					nomaux = nombCurso[j];
+					nombCurso[j] = nombCurso[i];
+					nombCurso[i] = nomaux;
+					credaux = cred[j];
+					cred[j] = cred[i];
+					cred[j] = credaux;
+					cicloaux = ciclo[j];
+					ciclo[j] = ciclo[i];
+					ciclo[i] = cicloaux;
+					idcursaux = idCurso[j];
+					idCurso[j] = idCurso[i];
+					idCurso[i] = idcursaux;
+					idprereqaux = idPrereq[j];
+					idPrereq[j] = idPrereq[i];
+					idPrereq[i] = idprereqaux;
+				}
+			}
+		}
+		System.out.println("Datos ordenados de forma descendente");
+		System.out.println();
+		return;
+	}
+	
+	//////////////////Consultar por IDAlumno////////////////
+	static int ConsultarIdAlumno(int n, int idAlumno[], int id)throws IOException{
+		int i,existeAlumno = 0;
+		for(i = 0; i < n; i++){
+				if(idAlumno[i] == id){
+					existeAlumno = 1;
+					i = n;
+				}
+			}
+		return existeAlumno;
+	}
+	
+	//////////////////Verificar si tiene aprobado el curso////////////////
+	static int aprobCurso(int a, int b, String idPrereq[], String idCursoAprob[]){
+		int aprob = 0;
+		if( (idPrereq[a].compareTo(idCursoAprob[b]) != 0) || (idPrereq[a].compareTo("") != 0) ){
+			aprob = 1;
+		}
+		return aprob;
+	}
+	
+	//////////////////Comprobar si puedo matricularme en el curso////////////////
+	static void validarCurso(int n, int sumCred[], int cred[], String idPrereq[], String idCursoAprob[], int NMatricula[])throws IOException{
+		int i,j;
+		for(i = 0; i < n; i++){
+			 for(j = 0; j < n; j++){
+			 	if( (idPrereq[i].compareTo(idCursoAprob[j]) != 0) || (idPrereq[i].compareTo("") != 0) ){	//Puede matricularse en el curso i.
+			 		NMatricula[i] += 1; //Número de veces que se ha matriculado en un curso.
+			 		sumCred[0] += cred[i];	//Calculo el total de créditos que suman las materias en las que puedo matricularme.
+			 		j = n;	
+			 	}
+			 	else
+			 		System.out.println("No has aprobado el curso prerrequisito: " + idPrereq[i]);		
+			 }
+		}
+		return;
+	}
+	
+	//////////////////Comprobar el número de créditos disponibles de acuerdo al número de matrículas////////////////
+	static void validarCred(int n, int NMatricula[], int nCredDisp){
+		int i;
+		for(i = 0; i < n; i++){
+			if(NMatricula[i] == 4){
+				System.out.println("Solo puedes registrarte en un curso.");//OJO:Dar a escoger al usuario en qué única materia quiere matricularse!!
+				nCredDisp = -1;//FALTA SOLUCIONAR ESTE PUNTO.
+				i = n;
+			}
+			else if(NMatricula[i] == 3){
+				nCredDisp = 12;
+				i = n;
+			}
+		}
+		return;
+	}
+
+	//////////////////Asignar cursos matriculados////////////////
+	static void AsignaCursoMat(int a, int n,  String nombCurso[], String idCurso[], int cred[], 
+		String nombCursoMat[],String idCursoMat[], int credCursoMat[])throws IOException{
+		nombCursoMat[a] = nombCurso[a];
+		idCursoMat[a] = idCurso[a];
+		credCursoMat[a] = cred[a];
+		return;
+	}
+	
+	//////////////////Matrícula en un alumno nuevo////////////////
+	static void AlumnoNuevo(int n, int asignoID, int nCredDisp,int NAlumno[], int NMatricula[], 
+		String nombCurso[], String idCurso[], int cred[], String nombAlumno[], 
+		int idAlumno[], String nombCursoMat[],String idCursoMat[], int credCursoMat[],int sumCred[])throws IOException{
+		int i,id;
+		String nomb;
+		
+		System.out.print("Nombre del alumno:");
+		nomb = br.readLine().toUpperCase();
+		id = asignoID++;
+			
+		for(i = 0; i < n; i++){	//Inicializo el array NMatricula a uno porque todos los cursos serían de 1era matrícula.
+			NMatricula[i] = 1;
+		}
+		//Al ser alumno nuevo,no tendrá prereq por lo que solo verifico que los cursos en los que desea matricularse sea menor o igual a 21 créditos.
+		for(i = 0; i < n; i++){
+			sumCred[0] += cred[i];
+		}
+		if(sumCred[0] <= nCredDisp){
+			idAlumno[NAlumno[0]] = id;
+			nombAlumno[NAlumno[0]] = nomb;
+			NAlumno[0] += 1;
+			for(i = 0; i < n; i++){
+				AsignaCursoMat(i,n,nombCurso,idCurso,cred,nombCursoMat,idCursoMat,credCursoMat);
+			}	
+		}
+		else
+			System.out.println("Los cursos en los que desea matricularse superan los "+ nCredDisp + " créditos.");
+		return;
+	}
+	
+	//////////////////Matrícula en un alumno registrado////////////////
+	static void AlumnoReg(int n,int idAlumno[], String idPrereq[], String idCursoAprob[], int NMatricula[], 
+		String nombCurso[], String idCurso[],  int cred[], String nombCursoMat[],String idCursoMat[], int credCursoMat[])throws IOException{
+		int i,j,reg,aprob = 0,id,nCredDisp = 21, sumCred[] = new int[1];
+		sumCred[0] = 0;
+		do{
+			System.out.print("ID alumno:");
+			id = Integer.parseInt(br.readLine());
+		}while(id != 9);
+			
+		reg = ConsultarIdAlumno(n,idAlumno,id);//Busco si el alumno existe...
+			
+		if(reg == 1){	//Solo si es un alumno ya registrado,continuo con el proceso de matrícula.
+			/*1°Comprobar si puedo matricularme en los cursos que he ingresado:
+			 	1.1Ver si ha aprobado sus prerequisitos
+			 	1.2Ver el total de créditos que suma(si tengo algun curso en 3 o 4ta matricula,limita el nCredDisp)*/
+			 validarCurso(n,sumCred,cred,idPrereq,idCursoAprob,NMatricula);
+			 	
+			 /*Si tengo alguna materia en 4ta o 3era matrícula debo limitar el número de créditos,
+			si no tendré 21 créditos disponibles(si las materias son de 2da o 1era matrícula)*/ 
+			validarCred(n,NMatricula, nCredDisp);
+					
+			if(sumCred[0] <= nCredDisp){	//Puede matricularse en los cursos que ingresó al principio.
+				for(i = 0; i < n; i++){
+					for(j = 0; j < n; j++){
+						aprob = aprobCurso(i,j,idPrereq,idCursoAprob);
+						if(aprob == 1)
+							j = n;
+					}
+					if(aprob == 1)	//si el prereq se encuentra en cursoAprob
+						AsignaCursoMat(i,n,nombCurso,idCurso,cred,nombCursoMat,idCursoMat,credCursoMat);
+					else
+						System.out.println("No aprobaste el curso cuyo id es "+ idPrereq[i]);
+				}
+			}
+			else
+				System.out.println("Los cursos en los que desea matricularse superan los "+ nCredDisp + " créditos.");		
+		}
+		else
+			System.out.print("No estas registrado como alumno de esta universidad.");
+		return;
+	}
+	
+	//////////////////Método Matricular////////////////
+	static void Matricular(int n,int NAlumno[], String nombCurso[], String idCurso[], int cred[], String idPrereq[], int ciclo[], String nombAlumno[], 
+		int idAlumno[], String nombCursoMat[],String idCursoMat[], int credCursoMat[], String idCursoAprob[])throws IOException{
+		int NMatricula[] = new int[50],sumCred[] = new int[1];
+		int i, j,asignoID = 0000000001,nCredDisp = 21, idAux, alumnoReg = 0,aprob = 0;
+		char rpta;
+		sumCred[0] = 0;
+		
+		do{
+			System.out.print("Eres alumno nuevo?(S/N):");
+			rpta = br.readLine().toUpperCase().charAt(0);
+		}while(rpta != 'S' && rpta != 'N');
+		
+		if(rpta == 'S'){	//ALUMNO NUEVO.
+			AlumnoNuevo(n,asignoID,nCredDisp,NAlumno,NMatricula,nombCurso,
+			idCurso,cred,nombAlumno,idAlumno,nombCursoMat,idCursoMat,credCursoMat,sumCred);
+		}
+		else	//ALUMNO YA REGISTRADO.
+			AlumnoReg(n,idAlumno,idPrereq,idCursoAprob,NMatricula,nombCurso,idCurso,cred,nombCursoMat,idCursoMat,credCursoMat);	
+			
+		return;
+	}
+	
+	//////////////////Método reportar todo////////////////
+	static void ReportarTodo(int n, int NAlumno[], int sumCred[], String nombAlumno[], String nombCursoMat[],
+		String idCursoMat[], int credCursoMat[],int ciclo[])throws IOException{
+		int i,j;
+		System.out.print("NALUMNO:" + NAlumno[0]);
+		for(i = 0; i < NAlumno[0]; i++){
+			System.out.print("Matricula del alumno(a): "+ nombAlumno[i]);
+			for(j = 0; j < n; j++){
+				System.out.println("\nSe ha matriculado con exito en los siguientes cursos: ");
+				System.out.println("Nombre curso\t|  ID Curso \t|  Creditos \t|  Ciclo");	
+				System.out.println(nombCursoMat[j] + " \t| " + idCursoMat[j] + " \t| " + credCursoMat[j] + " \t| " + ciclo[j]);
+			}
+			System.out.println("Se ha matriculado en un total de " + sumCred[0] + " creditos.");
+		}
+		
+		return;	
+	}
+		
+		
+}	
+		
+		
